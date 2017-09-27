@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="lib/photoswipe.css">
+    <link rel="stylesheet" href="lib/default-skin/default-skin.css">
+</head>
+
+<body>
+    <main>
+        <a class="gallery" href="img/a.jpg" data-size="600x400">
+            <img src="img/a.jpg" width="120" height="80" alt="画像1です" />
+        </a>
+
+        <a class="gallery" href="img/b.jpg" data-size="600x400">
+            <img src="img/b.jpg" width="120" height="80" alt="画像2です" />
+        </a>
+    </main>
+
+    <!-- PhotoSwipe View -->
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <!-- Background of PhotoSwipe. 
+                 It's a separate element as animating opacity is faster than rgba(). -->
+        <div class="pswp__bg"></div>
+
+        <!-- Slides wrapper with overflow:hidden. -->
+        <div class="pswp__scroll-wrap">
+
+            <!-- Container that holds slides. 
+                    PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                    Don't modify these 3 pswp__item elements, data is added later on. -->
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+
+            <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+            <div class="pswp__ui pswp__ui--hidden">
+
+                <div class="pswp__top-bar">
+
+                    <!--  Controls are self-explanatory. Order can be changed. -->
+
+                    <div class="pswp__counter"></div>
+
+                    <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                    <!-- <button class="pswp__button pswp__button--share" title="Share"></button> -->
+                    <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                    <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                    <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                    <!-- element will get class pswp__preloader--active when preloader is running -->
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                            <div class="pswp__preloader__cut">
+                                <div class="pswp__preloader__donut"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div>
+
+                <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+                <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="lib/photoswipe.min.js"></script>
+    <script src="lib/photoswipe-ui-default.min.js"></script>
+
+    <script>
+        // ギャラリービュー
+        var pswpElement = document.querySelectorAll('.pswp')[0];
+        // 画像リスト
+        var items = [];
+
+        // クリックイベントリスナー
+        var onThumbnailsClick = function (e) {
+            e = e || window.event;
+            e.preventDefault ? e.preventDefault() : e.returnValue = false;
+            var eTarget = e.target || e.srcElement;
+
+            //クリックされたのが何番目の要素かを取得
+            var no = parseInt(eTarget.dataset.id);
+
+            if (no >= 0) {
+                // PhotoSwipe 起動
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, { index: no });
+                gallery.init();
+            }
+
+            return false;
+        };
+
+        // 画像リストを生成する
+        var gallery = document.querySelectorAll('.gallery');
+        for (var i = 0, len = gallery.length; i < len; i++) {
+            size = gallery[i].dataset.size.split('x');
+            src = gallery[i].href;
+            title = gallery[i].firstElementChild.alt;
+            items.push({
+                src: src,
+                w: size[0],
+                h: size[1],
+                title: title
+            });
+            // クリックイベントリスナー追加
+            gallery[i].firstElementChild.dataset.id = i;
+            gallery[i].addEventListener("click", onThumbnailsClick);
+        }
+    </script>
+</body>
+
+</html>
